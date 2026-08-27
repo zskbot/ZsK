@@ -1,0 +1,2953 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ZsK-bot — Engineering Intelligence</title>
+
+  <meta
+    name="description"
+    content="ZsK-bot — AI engineering intelligence for code review, security analysis and developer workflows."
+  >
+  <meta name="theme-color" content="#0b0e13">
+
+  <!-- IBM Plex -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    /* =========================================================
+       ZSK-BOT
+       Engineering Intelligence
+       Single-file GitHub Pages build
+    ========================================================= */
+
+    :root {
+      --ink: #0b0e13;
+      --ink-deep: #080a0e;
+      --panel: #12151c;
+      --panel-soft: #0f1218;
+      --panel-raised: #151922;
+
+      --line: #1e2330;
+      --line-bright: #2a3140;
+
+      --text: #e7eaf0;
+      --text-soft: #b8bfcc;
+      --muted: #8891a6;
+      --dim: #596276;
+
+      --signal: #4fe0c4;
+      --signal-soft: rgba(79, 224, 196, 0.10);
+      --signal-line: rgba(79, 224, 196, 0.30);
+
+      --warn: #f5a623;
+      --danger: #ff6b6b;
+
+      --max: 1240px;
+      --header: 72px;
+
+      --sans: "IBM Plex Sans", sans-serif;
+      --mono: "IBM Plex Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--ink);
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(
+          circle at 75% -10%,
+          rgba(79, 224, 196, 0.055),
+          transparent 30%
+        ),
+        var(--ink);
+      color: var(--text);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    ::selection {
+      background: var(--signal);
+      color: #07100e;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--ink);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--line-bright);
+    }
+
+    /* =========================================================
+       ACCESSIBILITY
+    ========================================================= */
+
+    :focus-visible {
+      outline: 2px solid var(--signal);
+      outline-offset: 4px;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: -80px;
+      z-index: 999;
+      padding: 10px 14px;
+      background: var(--signal);
+      color: #07100e;
+      font-family: var(--mono);
+      font-size: 12px;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus {
+      top: 16px;
+    }
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      height: var(--header);
+
+      border-bottom: 1px solid rgba(30, 35, 48, 0.82);
+
+      background: rgba(11, 14, 19, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .header-inner {
+      width: min(calc(100% - 40px), var(--max));
+      height: 100%;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+    }
+
+    .brand-symbol {
+      position: relative;
+
+      width: 30px;
+      height: 30px;
+
+      display: grid;
+      place-items: center;
+
+      border: 1px solid var(--line-bright);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(79, 224, 196, 0.12),
+          transparent 60%
+        ),
+        var(--panel);
+    }
+
+    .brand-symbol::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+
+      border: 2px solid var(--signal);
+      border-radius: 50%;
+    }
+
+    .brand-symbol::after {
+      content: "";
+      position: absolute;
+
+      width: 2px;
+      height: 12px;
+
+      background: var(--signal);
+
+      transform: rotate(45deg);
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-name span {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .desktop-nav a {
+      position: relative;
+      padding: 8px 0;
+      transition: color 0.18s ease;
+    }
+
+    .desktop-nav a:hover {
+      color: var(--text);
+    }
+
+    .desktop-nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 100%;
+      bottom: 2px;
+      height: 1px;
+      background: var(--signal);
+
+      transition: right 0.2s ease;
+    }
+
+    .desktop-nav a:hover::after {
+      right: 0;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--signal);
+      box-shadow: 0 0 0 4px rgba(79, 224, 196, 0.07);
+    }
+
+    .mobile-menu-button {
+      display: none;
+
+      width: 38px;
+      height: 38px;
+
+      border: 1px solid var(--line);
+      background: transparent;
+
+      cursor: pointer;
+    }
+
+    .mobile-menu-button span,
+    .mobile-menu-button span::before,
+    .mobile-menu-button span::after {
+      display: block;
+      width: 16px;
+      height: 1px;
+      background: var(--text);
+      margin: auto;
+
+      transition: transform 0.2s ease;
+    }
+
+    .mobile-menu-button span::before,
+    .mobile-menu-button span::after {
+      content: "";
+      position: relative;
+    }
+
+    .mobile-menu-button span::before {
+      top: -5px;
+    }
+
+    .mobile-menu-button span::after {
+      top: 4px;
+    }
+
+    /* =========================================================
+       MOBILE NAV
+    ========================================================= */
+
+    .mobile-nav {
+      position: fixed;
+      inset: var(--header) 0 0 0;
+      z-index: 90;
+
+      display: none;
+
+      padding: 28px 20px;
+
+      background: var(--ink);
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mobile-nav.active {
+      display: block;
+    }
+
+    .mobile-nav a {
+      display: block;
+      padding: 17px 0;
+
+      border-bottom: 1px solid var(--line);
+
+      color: var(--text-soft);
+      font-size: 18px;
+    }
+
+    .mobile-nav .mobile-nav-meta {
+      margin-top: 30px;
+
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    /* =========================================================
+       GLOBAL
+    ========================================================= */
+
+    .container {
+      width: min(calc(100% - 40px), var(--max));
+      margin: auto;
+    }
+
+    .section {
+      position: relative;
+      padding: 120px 0;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      margin-bottom: 20px;
+
+      color: var(--signal);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-line {
+      width: 26px;
+      height: 1px;
+      background: var(--signal);
+    }
+
+    .section-title {
+      margin: 0;
+
+      color: var(--text);
+      font-size: clamp(32px, 5vw, 58px);
+      font-weight: 600;
+      letter-spacing: -0.045em;
+      line-height: 1.02;
+    }
+
+    .section-copy {
+      max-width: 620px;
+
+      margin: 22px 0 0;
+
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .mono {
+      font-family: var(--mono);
+    }
+
+    .signal {
+      color: var(--signal);
+    }
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+
+    .hero {
+      min-height: 100vh;
+      padding-top: calc(var(--header) + 80px);
+      padding-bottom: 90px;
+
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(380px, 0.95fr);
+      gap: 70px;
+      align-items: center;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+
+      margin-bottom: 25px;
+
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .hero-kicker strong {
+      color: var(--signal);
+      font-weight: 500;
+    }
+
+    .hero-title {
+      max-width: 760px;
+
+      margin: 0;
+
+      font-size: clamp(54px, 7vw, 92px);
+      font-weight: 600;
+      letter-spacing: -0.065em;
+      line-height: 0.94;
+    }
+
+    .hero-title .muted-word {
+      color: #687184;
+    }
+
+    .hero-description {
+      max-width: 610px;
+
+      margin: 30px 0 0;
+
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      margin-top: 36px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      min-height: 44px;
+      padding: 0 18px;
+
+      border: 1px solid var(--line-bright);
+
+      background: var(--panel);
+
+      color: var(--text);
+
+      font-size: 13px;
+      font-weight: 500;
+
+      cursor: pointer;
+
+      transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+    }
+
+    .button:hover {
+      background: var(--panel-raised);
+      border-color: #3a4353;
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      border-color: var(--signal);
+      background: var(--signal);
+      color: #07100e;
+    }
+
+    .button-primary:hover {
+      border-color: var(--signal);
+      background: #68e8cf;
+    }
+
+    .button-arrow {
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    /* =========================================================
+       HERO REVIEW TERMINAL
+    ========================================================= */
+
+    .review-window {
+      position: relative;
+
+      border: 1px solid var(--line);
+
+      background: var(--panel);
+
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.01);
+    }
+
+    .review-window::before {
+      content: "";
+
+      position: absolute;
+      top: -1px;
+      left: 18px;
+      right: 18px;
+
+      height: 1px;
+
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--signal),
+        transparent
+      );
+
+      opacity: 0.7;
+    }
+
+    .window-top {
+      height: 46px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 15px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .window-file {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+
+    .window-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+
+      color: var(--signal);
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .window-status .status-dot {
+      width: 5px;
+      height: 5px;
+    }
+
+    .review-body {
+      padding: 22px 0 0;
+    }
+
+    .review-file-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+
+      padding: 0 20px 17px;
+
+      color: var(--text-soft);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .review-file-header span:last-child {
+      color: var(--dim);
+    }
+
+    .diff {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .diff-line {
+      display: grid;
+      grid-template-columns: 34px 22px 1fr;
+
+      padding-right: 16px;
+
+      min-height: 22px;
+    }
+
+    .diff-line-number {
+      padding-right: 7px;
+
+      text-align: right;
+
+      color: #414958;
+      user-select: none;
+    }
+
+    .diff-sign {
+      color: var(--dim);
+    }
+
+    .diff-code {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .diff-add {
+      background: rgba(79, 224, 196, 0.045);
+    }
+
+    .diff-add .diff-sign {
+      color: var(--signal);
+    }
+
+    .diff-add .diff-code {
+      color: #d3e9e4;
+    }
+
+    .diff-comment {
+      margin: 17px 20px 20px;
+
+      border-left: 2px solid var(--warn);
+
+      background: rgba(245, 166, 35, 0.055);
+
+      padding: 14px 15px;
+    }
+
+    .comment-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+
+      margin-bottom: 9px;
+
+      color: var(--warn);
+
+      font-family: var(--mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .comment-title {
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .comment-text {
+      margin: 7px 0 0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    .review-footer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      border-top: 1px solid var(--line);
+    }
+
+    .review-stat {
+      padding: 13px 15px;
+
+      border-right: 1px solid var(--line);
+    }
+
+    .review-stat:last-child {
+      border-right: 0;
+    }
+
+    .review-stat-label {
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .review-stat-value {
+      margin-top: 4px;
+
+      color: var(--text-soft);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    /* =========================================================
+       SIGNAL STRIP
+    ========================================================= */
+
+    .signal-strip {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+
+      background: var(--panel-soft);
+    }
+
+    .signal-strip-inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .signal-item {
+      min-height: 104px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 20px;
+
+      border-right: 1px solid var(--line);
+    }
+
+    .signal-item:last-child {
+      border-right: 0;
+    }
+
+    .signal-value {
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 18px;
+    }
+
+    .signal-label {
+      margin-top: 6px;
+
+      color: var(--dim);
+      font-size: 11px;
+    }
+
+    /* =========================================================
+       COMPANY
+    ========================================================= */
+
+    .company-layout {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 100px;
+    }
+
+    .company-statement {
+      margin: 0;
+
+      font-size: clamp(30px, 4vw, 52px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 1.08;
+    }
+
+    .company-statement span {
+      color: var(--signal);
+    }
+
+    .company-copy {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.85;
+    }
+
+    .company-copy p {
+      margin: 0 0 22px;
+    }
+
+    .company-rule {
+      width: 100%;
+      height: 1px;
+
+      margin: 35px 0;
+
+      background: var(--line);
+    }
+
+    .company-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .meta-block-label {
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .meta-block-value {
+      margin-top: 8px;
+
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    /* =========================================================
+       TECHNOLOGY
+    ========================================================= */
+
+    .technology {
+      border-top: 1px solid var(--line);
+      background:
+        linear-gradient(
+          90deg,
+          transparent 0,
+          rgba(30, 35, 48, 0.28) 50%,
+          transparent 100%
+        );
+    }
+
+    .technology-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 40px;
+      margin-bottom: 55px;
+    }
+
+    .technology-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .technology-card {
+      min-height: 310px;
+
+      padding: 30px;
+
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+
+      transition:
+        background 0.25s ease,
+        transform 0.25s ease;
+    }
+
+    .technology-card:hover {
+      background: rgba(79, 224, 196, 0.025);
+    }
+
+    .technology-index {
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .technology-icon {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      margin: 55px 0 25px;
+
+      border: 1px solid var(--line-bright);
+
+      color: var(--signal);
+      font-family: var(--mono);
+      font-size: 14px;
+    }
+
+    .technology-card h3 {
+      margin: 0;
+
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .technology-card p {
+      max-width: 310px;
+
+      margin: 12px 0 0;
+
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       ARCHITECTURE
+    ========================================================= */
+
+    .architecture-layout {
+      display: grid;
+      grid-template-columns: 0.7fr 1.3fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .architecture-diagram {
+      position: relative;
+
+      border: 1px solid var(--line);
+
+      background: var(--panel);
+
+      padding: 40px 35px;
+    }
+
+    .architecture-diagram::before {
+      content: "SYSTEM PATH";
+
+      position: absolute;
+      top: -7px;
+      left: 18px;
+
+      padding: 0 7px;
+
+      background: var(--ink);
+
+      color: var(--dim);
+
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.1em;
+    }
+
+    .architecture-node {
+      position: relative;
+
+      min-height: 74px;
+
+      display: flex;
+      align-items: center;
+      gap: 17px;
+
+      padding: 15px 17px;
+
+      border: 1px solid var(--line-bright);
+
+      background: var(--panel-soft);
+    }
+
+    .architecture-node:not(:last-child)::after {
+      content: "";
+
+      position: absolute;
+
+      left: 24px;
+      bottom: -27px;
+
+      width: 1px;
+      height: 26px;
+
+      background: var(--line-bright);
+    }
+
+    .architecture-node:not(:last-child)::before {
+      content: "";
+
+      position: absolute;
+
+      left: 21px;
+      bottom: -30px;
+
+      width: 7px;
+      height: 7px;
+
+      border-right: 1px solid var(--signal);
+      border-bottom: 1px solid var(--signal);
+
+      transform: rotate(45deg);
+    }
+
+    .node-number {
+      width: 27px;
+      height: 27px;
+
+      display: grid;
+      place-items: center;
+
+      border: 1px solid var(--line-bright);
+
+      color: var(--signal);
+
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .node-content strong {
+      display: block;
+
+      color: var(--text);
+
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .node-content span {
+      display: block;
+
+      margin-top: 3px;
+
+      color: var(--dim);
+
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .architecture-description {
+      padding-top: 10px;
+    }
+
+    .architecture-description h3 {
+      margin: 0;
+
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: -0.035em;
+    }
+
+    .architecture-description > p {
+      margin: 20px 0 0;
+
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .principles {
+      margin-top: 35px;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .principle {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+
+      padding: 17px 0;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .principle-label {
+      color: var(--signal);
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .principle-text {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       WORKFLOW
+    ========================================================= */
+
+    .workflow {
+      background: var(--panel-soft);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .workflow-track {
+      position: relative;
+
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+
+      margin-top: 60px;
+    }
+
+    .workflow-track::before {
+      content: "";
+
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 21px;
+
+      height: 1px;
+
+      background: var(--line-bright);
+    }
+
+    .workflow-step {
+      position: relative;
+      padding-right: 30px;
+    }
+
+    .workflow-step:last-child {
+      padding-right: 0;
+    }
+
+    .workflow-node {
+      position: relative;
+      z-index: 2;
+
+      width: 43px;
+      height: 43px;
+
+      display: grid;
+      place-items: center;
+
+      border: 1px solid var(--line-bright);
+
+      background: var(--panel-soft);
+
+      color: var(--signal);
+
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .workflow-step h3 {
+      margin: 25px 0 9px;
+
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .workflow-step p {
+      margin: 0;
+
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    /* =========================================================
+       ECOSYSTEM
+    ========================================================= */
+
+    .ecosystem-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+
+      margin-top: 55px;
+
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .ecosystem-item {
+      min-height: 140px;
+
+      padding: 25px;
+
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ecosystem-name {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .ecosystem-type {
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .ecosystem-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .ecosystem-status .status-dot {
+      width: 5px;
+      height: 5px;
+    }
+
+    /* =========================================================
+       ROADMAP
+    ========================================================= */
+
+    .roadmap {
+      border-top: 1px solid var(--line);
+    }
+
+    .roadmap-list {
+      margin-top: 55px;
+
+      border-top: 1px solid var(--line);
+    }
+
+    .roadmap-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 120px;
+      gap: 25px;
+
+      align-items: center;
+
+      min-height: 100px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .roadmap-phase {
+      color: var(--signal);
+
+      font-family: var(--mono);
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .roadmap-title {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .roadmap-description {
+      margin-top: 5px;
+
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .roadmap-status {
+      justify-self: end;
+
+      padding: 5px 8px;
+
+      border: 1px solid var(--line-bright);
+
+      color: var(--muted);
+
+      font-family: var(--mono);
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .roadmap-status.active {
+      border-color: var(--signal-line);
+      color: var(--signal);
+    }
+
+    /* =========================================================
+       CTA
+    ========================================================= */
+
+    .final-cta {
+      padding: 130px 0 150px;
+
+      text-align: center;
+    }
+
+    .final-cta .eyebrow {
+      justify-content: center;
+    }
+
+    .final-title {
+      max-width: 850px;
+
+      margin: 0 auto;
+
+      font-size: clamp(42px, 7vw, 78px);
+      font-weight: 600;
+      letter-spacing: -0.06em;
+      line-height: 0.98;
+    }
+
+    .final-copy {
+      max-width: 570px;
+
+      margin: 25px auto 0;
+
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .final-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      margin-top: 34px;
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+
+    footer {
+      border-top: 1px solid var(--line);
+
+      background: var(--ink-deep);
+    }
+
+    .footer-inner {
+      min-height: 180px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 40px;
+    }
+
+    .footer-brand p {
+      margin: 10px 0 0;
+
+      color: var(--dim);
+
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 22px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+    .footer-links a:hover {
+      color: var(--signal);
+    }
+
+    .footer-bottom {
+      padding: 15px 0;
+
+      border-top: 1px solid var(--line);
+
+      color: #454d5c;
+
+      font-family: var(--mono);
+      font-size: 8px;
+    }
+
+    .footer-bottom-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    /* =========================================================
+       REVEAL
+    ========================================================= */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+
+      transition:
+        opacity 0.7s ease,
+        transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================================================
+       HERO GRID ATMOSPHERE
+    ========================================================= */
+
+    .hero-atmosphere {
+      position: absolute;
+      inset: 72px 0 auto 0;
+      height: 600px;
+
+      pointer-events: none;
+
+      background-image:
+        linear-gradient(
+          rgba(30, 35, 48, 0.24) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(30, 35, 48, 0.24) 1px,
+          transparent 1px
+        );
+
+      background-size: 64px 64px;
+
+      mask-image:
+        radial-gradient(
+          ellipse 65% 65% at 70% 15%,
+          black 10%,
+          transparent 75%
+        );
+
+      opacity: 0.42;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 1000px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+
+      .review-window {
+        max-width: 720px;
+      }
+
+      .company-layout,
+      .architecture-layout {
+        grid-template-columns: 1fr;
+        gap: 55px;
+      }
+
+      .technology-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .technology-card {
+        min-height: 270px;
+      }
+
+      .workflow-track {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 45px 30px;
+      }
+
+      .workflow-track::before {
+        display: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      :root {
+        --header: 64px;
+      }
+
+      .container {
+        width: min(calc(100% - 32px), var(--max));
+      }
+
+      .section {
+        padding: 85px 0;
+      }
+
+      .desktop-nav,
+      .header-status {
+        display: none;
+      }
+
+      .mobile-menu-button {
+        display: grid;
+        place-items: center;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 120px;
+        padding-bottom: 75px;
+      }
+
+      .hero-title {
+        font-size: clamp(48px, 15vw, 72px);
+      }
+
+      .hero-description {
+        font-size: 15px;
+      }
+
+      .signal-strip-inner {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .signal-item:nth-child(2) {
+        border-right: 0;
+      }
+
+      .signal-item:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .technology-header {
+        display: block;
+      }
+
+      .technology-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .technology-card {
+        min-height: 240px;
+      }
+
+      .technology-icon {
+        margin-top: 40px;
+      }
+
+      .architecture-diagram {
+        padding: 30px 20px;
+      }
+
+      .principle {
+        grid-template-columns: 95px 1fr;
+        gap: 15px;
+      }
+
+      .workflow-track {
+        grid-template-columns: 1fr;
+        gap: 35px;
+      }
+
+      .workflow-step {
+        padding-right: 0;
+      }
+
+      .ecosystem-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .roadmap-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+
+        padding: 22px 0;
+      }
+
+      .roadmap-status {
+        justify-self: start;
+      }
+
+      .footer-inner {
+        min-height: 0;
+
+        padding: 45px 0;
+
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .footer-links {
+        justify-content: flex-start;
+      }
+
+      .footer-bottom-inner {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .review-footer {
+        grid-template-columns: 1fr;
+      }
+
+      .review-stat {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .review-stat:last-child {
+        border-bottom: 0;
+      }
+
+      .diff {
+        font-size: 9px;
+      }
+
+      .diff-line {
+        grid-template-columns: 27px 17px 1fr;
+      }
+
+      .review-file-header {
+        font-size: 9px;
+      }
+
+      .company-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .signal-strip-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .signal-item {
+        min-height: 90px;
+        padding: 15px;
+      }
+
+      .hero-actions,
+      .final-actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+
+    /* =========================================================
+       REDUCED MOTION
+    ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
+
+  <!-- =======================================================
+       HEADER
+  ======================================================== -->
+
+  <header class="site-header">
+    <div class="header-inner">
+
+      <a href="#top" class="brand" aria-label="ZsK-bot trang chủ">
+        <div class="brand-symbol" aria-hidden="true"></div>
+
+        <div class="brand-name">
+          ZsK-bot <span>/ engineering intelligence</span>
+        </div>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Điều hướng chính">
+        <a href="#company">Company</a>
+        <a href="#technology">Technology</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#ecosystem">Ecosystem</a>
+        <a href="#roadmap">Roadmap</a>
+      </nav>
+
+      <div class="header-status">
+        <span class="status-dot"></span>
+        SYSTEM ONLINE
+      </div>
+
+      <button
+        id="mobileMenuButton"
+        class="mobile-menu-button"
+        aria-label="Mở menu"
+        aria-expanded="false"
+        aria-controls="mobileNav"
+      >
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- MOBILE NAV -->
+
+  <nav id="mobileNav" class="mobile-nav" aria-label="Điều hướng mobile">
+
+    <a href="#company">Company</a>
+    <a href="#technology">Technology</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#ecosystem">Ecosystem</a>
+    <a href="#roadmap">Roadmap</a>
+
+    <div class="mobile-nav-meta">
+      ZSK-BOT / ENGINEERING INTELLIGENCE<br>
+      SYSTEM STATUS: ONLINE
+    </div>
+
+  </nav>
+
+  <div id="top"></div>
+
+  <!-- =======================================================
+       HERO
+  ======================================================== -->
+
+  <div class="hero-atmosphere"></div>
+
+  <main id="main">
+
+    <section class="hero">
+      <div class="container">
+
+        <div class="hero-grid">
+
+          <div class="hero-content reveal">
+
+            <div class="hero-kicker">
+              <span class="status-dot"></span>
+              <strong>ZSK-BOT</strong>
+              <span>·</span>
+              ENGINEERING INTELLIGENCE
+            </div>
+
+            <h1 class="hero-title">
+              Intelligence<br>
+              <span class="muted-word">for the code</span><br>
+              that matters.
+            </h1>
+
+            <p class="hero-description">
+              ZsK-bot builds AI systems that understand software changes,
+              identify engineering risk and turn complex code into
+              actionable technical insight.
+            </p>
+
+            <div class="hero-actions">
+
+              <a
+                href="https://github.com/ZsK-bot"
+                class="button button-primary"
+                target="_blank"
+                rel="noopener"
+              >
+                Explore GitHub
+                <span class="button-arrow">→</span>
+              </a>
+
+              <a href="#technology" class="button">
+                Discover the system
+                <span class="button-arrow">↓</span>
+              </a>
+
+            </div>
+
+          </div>
+
+          <!-- REVIEW SURFACE -->
+
+          <div class="review-window reveal">
+
+            <div class="window-top">
+              <span class="window-file">
+                pull-request / #184
+              </span>
+
+              <span class="window-status">
+                <span class="status-dot"></span>
+                ANALYSIS COMPLETE
+              </span>
+            </div>
+
+            <div class="review-body">
+
+              <div class="review-file-header">
+                <span>src/auth/session.ts</span>
+                <span>+14 −4</span>
+              </div>
+
+              <div class="diff">
+
+                <div class="diff-line">
+                  <span class="diff-line-number">18</span>
+                  <span class="diff-sign"> </span>
+                  <span class="diff-code">async function createSession(user) {</span>
+                </div>
+
+                <div class="diff-line">
+                  <span class="diff-line-number">19</span>
+                  <span class="diff-sign"> </span>
+                  <span class="diff-code">  const session = await store.create({</span>
+                </div>
+
+                <div class="diff-line diff-add">
+                  <span class="diff-line-number">20</span>
+                  <span class="diff-sign">+</span>
+                  <span class="diff-code">    userId: user.id,</span>
+                </div>
+
+                <div class="diff-line diff-add">
+                  <span class="diff-line-number">21</span>
+                  <span class="diff-sign">+</span>
+                  <span class="diff-code">    token: generateToken()</span>
+                </div>
+
+                <div class="diff-line">
+                  <span class="diff-line-number">22</span>
+                  <span class="diff-sign"> </span>
+                  <span class="diff-code">  });</span>
+                </div>
+
+                <div class="diff-line">
+                  <span class="diff-line-number">23</span>
+                  <span class="diff-sign"> </span>
+                  <span class="diff-code">}</span>
+                </div>
+
+              </div>
+
+              <div class="diff-comment">
+
+                <div class="comment-label">
+                  <span>Security finding</span>
+                  <span>HIGH</span>
+                </div>
+
+                <div class="comment-title">
+                  Session lifetime is not bounded by privilege changes.
+                </div>
+
+                <p class="comment-text">
+                  A previously issued token may remain valid after
+                  authorization state changes. Consider token rotation
+                  when privilege boundaries change.
+                </p>
+
+              </div>
+
+            </div>
+
+            <div class="review-footer">
+
+              <div class="review-stat">
+                <div class="review-stat-label">Confidence</div>
+                <div class="review-stat-value">96%</div>
+              </div>
+
+              <div class="review-stat">
+                <div class="review-stat-label">Category</div>
+                <div class="review-stat-value">SECURITY</div>
+              </div>
+
+              <div class="review-stat">
+                <div class="review-stat-label">Status</div>
+                <div class="review-stat-value signal">REVIEWED</div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SIGNAL STRIP
+    ====================================================== -->
+
+    <section class="signal-strip" aria-label="ZsK-bot capabilities">
+
+      <div class="container">
+
+        <div class="signal-strip-inner">
+
+          <div class="signal-item">
+            <span class="signal-value">AI</span>
+            <span class="signal-label">Context-aware analysis</span>
+          </div>
+
+          <div class="signal-item">
+            <span class="signal-value">PR</span>
+            <span class="signal-label">Change-level intelligence</span>
+          </div>
+
+          <div class="signal-item">
+            <span class="signal-value">SEC</span>
+            <span class="signal-label">Risk-oriented review</span>
+          </div>
+
+          <div class="signal-item">
+            <span class="signal-value">API</span>
+            <span class="signal-label">Extensible provider layer</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         COMPANY
+    ====================================================== -->
+
+    <section id="company" class="section">
+
+      <div class="container">
+
+        <div class="eyebrow reveal">
+          <span class="eyebrow-line"></span>
+          The company
+        </div>
+
+        <div class="company-layout">
+
+          <div class="reveal">
+
+            <h2 class="company-statement">
+              Software is too complex
+              to be reviewed by
+              <span>surface alone.</span>
+            </h2>
+
+          </div>
+
+          <div class="company-copy reveal">
+
+            <p>
+              ZsK-bot is an engineering-focused AI initiative built around
+              one idea: software intelligence should understand the context
+              behind a change, not simply recognize patterns inside a file.
+            </p>
+
+            <p>
+              Our systems are designed to work alongside developers —
+              analyzing changes, surfacing risk, explaining findings and
+              helping engineering teams make better technical decisions.
+            </p>
+
+            <div class="company-rule"></div>
+
+            <div class="company-meta">
+
+              <div>
+                <div class="meta-block-label">Focus</div>
+                <div class="meta-block-value">
+                  AI × Software Engineering
+                </div>
+              </div>
+
+              <div>
+                <div class="meta-block-label">Approach</div>
+                <div class="meta-block-value">
+                  Context before conclusions
+                </div>
+              </div>
+
+              <div>
+                <div class="meta-block-label">Core</div>
+                <div class="meta-block-value">
+                  Code intelligence
+                </div>
+              </div>
+
+              <div>
+                <div class="meta-block-label">Model</div>
+                <div class="meta-block-value">
+                  Extensible provider architecture
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         TECHNOLOGY
+    ====================================================== -->
+
+    <section id="technology" class="section technology">
+
+      <div class="container">
+
+        <div class="technology-header">
+
+          <div>
+            <div class="eyebrow reveal">
+              <span class="eyebrow-line"></span>
+              Technology
+            </div>
+
+            <h2 class="section-title reveal">
+              Built around<br>
+              engineering context.
+            </h2>
+          </div>
+
+          <p class="section-copy reveal">
+            ZsK-bot is not a single prompt wrapped around an API.
+            It is a modular analysis system where review, routing,
+            model providers and engineering context can evolve independently.
+          </p>
+
+        </div>
+
+        <div class="technology-grid">
+
+          <article class="technology-card reveal">
+
+            <div class="technology-index">ENGINE / 01</div>
+
+            <div class="technology-icon">AI</div>
+
+            <h3>Review intelligence</h3>
+
+            <p>
+              Analyze code changes with context-aware reasoning instead
+              of treating every changed line as an isolated fragment.
+            </p>
+
+          </article>
+
+          <article class="technology-card reveal">
+
+            <div class="technology-index">ENGINE / 02</div>
+
+            <div class="technology-icon">↯</div>
+
+            <h3>Risk detection</h3>
+
+            <p>
+              Surface security, logic and architectural concerns while
+              keeping findings tied to concrete changes developers can inspect.
+            </p>
+
+          </article>
+
+          <article class="technology-card reveal">
+
+            <div class="technology-index">ENGINE / 03</div>
+
+            <div class="technology-icon">AI</div>
+
+            <h3>Provider routing</h3>
+
+            <p>
+              A provider-oriented architecture makes it possible to work
+              across different AI models without coupling the review engine
+              to one vendor.
+            </p>
+
+          </article>
+
+          <article class="technology-card reveal">
+
+            <div class="technology-index">ENGINE / 04</div>
+
+            <div class="technology-icon">CLI</div>
+
+            <h3>Developer workflows</h3>
+
+            <p>
+              Engineering intelligence should live where engineers work:
+              repositories, pull requests, terminals and automated pipelines.
+            </p>
+
+          </article>
+
+          <article class="technology-card reveal">
+
+            <div class="technology-index">ENGINE / 05</div>
+
+            <div class="technology-icon">CI</div>
+
+            <h3>Continuous review</h3>
+
+            <p>
+              Integrate analysis into automated workflows so code quality
+              becomes a continuous process rather than a final checkpoint.
+            </p>
+
+          </article>
+
+          <article class="technology-card reveal">
+
+            <div class="technology-index">ENGINE / 06</div>
+
+            <div class="technology-icon">+</div>
+
+            <h3>Extensible by design</h3>
+
+            <p>
+              New agents, providers and engineering capabilities can be
+              added without redesigning the entire system.
+            </p>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         ARCHITECTURE
+    ====================================================== -->
+
+    <section id="architecture" class="section">
+
+      <div class="container">
+
+        <div class="architecture-layout">
+
+          <div>
+
+            <div class="eyebrow reveal">
+              <span class="eyebrow-line"></span>
+              Architecture
+            </div>
+
+            <h2 class="section-title reveal">
+              From change<br>
+              to insight.
+            </h2>
+
+            <p class="section-copy reveal">
+              The architecture separates the review engine from model
+              providers and delivery surfaces. That separation is what
+              allows the system to evolve without locking the product
+              to one integration.
+            </p>
+
+          </div>
+
+          <div class="architecture-diagram reveal">
+
+            <div class="architecture-node">
+              <div class="node-number">01</div>
+
+              <div class="node-content">
+                <strong>Pull request</strong>
+                <span>change enters the system</span>
+              </div>
+            </div>
+
+            <div class="architecture-node">
+              <div class="node-number">02</div>
+
+              <div class="node-content">
+                <strong>Context layer</strong>
+                <span>diff · repository · metadata</span>
+              </div>
+            </div>
+
+            <div class="architecture-node">
+              <div class="node-number">03</div>
+
+              <div class="node-content">
+                <strong>Review engine</strong>
+                <span>reasoning · routing · analysis</span>
+              </div>
+            </div>
+
+            <div class="architecture-node">
+              <div class="node-number">04</div>
+
+              <div class="node-content">
+                <strong>Engineering output</strong>
+                <span>finding · explanation · action</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="principles reveal">
+
+          <div class="principle">
+            <div class="principle-label">CONTEXT</div>
+            <div class="principle-text">
+              A changed line only becomes meaningful when the surrounding
+              system is understood.
+            </div>
+          </div>
+
+          <div class="principle">
+            <div class="principle-label">TRACEABILITY</div>
+            <div class="principle-text">
+              Findings should lead developers back to the exact change
+              that produced the concern.
+            </div>
+          </div>
+
+          <div class="principle">
+            <div class="principle-label">MODULARITY</div>
+            <div class="principle-text">
+              Models, providers and analysis capabilities remain replaceable
+              parts of the larger system.
+            </div>
+          </div>
+
+          <div class="principle">
+            <div class="principle-label">ACTION</div>
+            <div class="principle-text">
+              An engineering finding is useful only when it helps someone
+              decide what to do next.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         WORKFLOW
+    ====================================================== -->
+
+    <section class="section workflow">
+
+      <div class="container">
+
+        <div class="eyebrow reveal">
+          <span class="eyebrow-line"></span>
+          Workflow
+        </div>
+
+        <h2 class="section-title reveal">
+          A review is a process,<br>
+          not a single response.
+        </h2>
+
+        <div class="workflow-track">
+
+          <div class="workflow-step reveal">
+
+            <div class="workflow-node">01</div>
+
+            <h3>Understand</h3>
+
+            <p>
+              Collect the change and relevant engineering context.
+            </p>
+
+          </div>
+
+          <div class="workflow-step reveal">
+
+            <div class="workflow-node">02</div>
+
+            <h3>Analyze</h3>
+
+            <p>
+              Inspect behavior, risk, security and architectural implications.
+            </p>
+
+          </div>
+
+          <div class="workflow-step reveal">
+
+            <div class="workflow-node">03</div>
+
+            <h3>Explain</h3>
+
+            <p>
+              Turn analysis into findings developers can actually evaluate.
+            </p>
+
+          </div>
+
+          <div class="workflow-step reveal">
+
+            <div class="workflow-node">04</div>
+
+            <h3>Act</h3>
+
+            <p>
+              Deliver the result where the engineering workflow already lives.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         ECOSYSTEM
+    ====================================================== -->
+
+    <section id="ecosystem" class="section">
+
+      <div class="container">
+
+        <div class="eyebrow reveal">
+          <span class="eyebrow-line"></span>
+          Ecosystem
+        </div>
+
+        <h2 class="section-title reveal">
+          Designed to connect.
+        </h2>
+
+        <p class="section-copy reveal">
+          ZsK-bot is built as an engineering layer rather than an isolated
+          interface. The system can connect with repositories, CI workflows,
+          AI providers and developer tooling.
+        </p>
+
+        <div class="ecosystem-grid">
+
+          <div class="ecosystem-item reveal">
+            <div>
+              <div class="ecosystem-type">Source control</div>
+              <div class="ecosystem-name">GitHub</div>
+            </div>
+
+            <div class="ecosystem-status">
+              <span class="status-dot"></span>
+              ENGINEERING WORKFLOW
+            </div>
+          </div>
+
+          <div class="ecosystem-item reveal">
+            <div>
+              <div class="ecosystem-type">AI provider</div>
+              <div class="ecosystem-name">Model APIs</div>
+            </div>
+
+            <div class="ecosystem-status">
+              <span class="status-dot"></span>
+              PROVIDER LAYER
+            </div>
+          </div>
+
+          <div class="ecosystem-item reveal">
+            <div>
+              <div class="ecosystem-type">Automation</div>
+              <div class="ecosystem-name">GitHub Actions</div>
+            </div>
+
+            <div class="ecosystem-status">
+              <span class="status-dot"></span>
+              CI PIPELINE
+            </div>
+          </div>
+
+          <div class="ecosystem-item reveal">
+            <div>
+              <div class="ecosystem-type">Developer tools</div>
+              <div class="ecosystem-name">CLI / IDE</div>
+            </div>
+
+            <div class="ecosystem-status">
+              <span class="status-dot"></span>
+              EXTENSIBLE
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         ROADMAP
+    ====================================================== -->
+
+    <section id="roadmap" class="section roadmap">
+
+      <div class="container">
+
+        <div class="eyebrow reveal">
+          <span class="eyebrow-line"></span>
+          Roadmap
+        </div>
+
+        <h2 class="section-title reveal">
+          Building the<br>
+          engineering layer.
+        </h2>
+
+        <div class="roadmap-list">
+
+          <div class="roadmap-row reveal">
+
+            <div class="roadmap-phase">
+              Phase / 01
+            </div>
+
+            <div>
+              <div class="roadmap-title">
+                Core review engine
+              </div>
+
+              <div class="roadmap-description">
+                Establish the analysis pipeline and provider abstraction.
+              </div>
+            </div>
+
+            <div class="roadmap-status active">
+              Active
+            </div>
+
+          </div>
+
+          <div class="roadmap-row reveal">
+
+            <div class="roadmap-phase">
+              Phase / 02
+            </div>
+
+            <div>
+              <div class="roadmap-title">
+                Repository intelligence
+              </div>
+
+              <div class="roadmap-description">
+                Expand analysis beyond individual diffs into repository context.
+              </div>
+            </div>
+
+            <div class="roadmap-status">
+              Planned
+            </div>
+
+          </div>
+
+          <div class="roadmap-row reveal">
+
+            <div class="roadmap-phase">
+              Phase / 03
+            </div>
+
+            <div>
+              <div class="roadmap-title">
+                Engineering agents
+              </div>
+
+              <div class="roadmap-description">
+                Introduce specialized agents for security, architecture and testing.
+              </div>
+            </div>
+
+            <div class="roadmap-status">
+              Planned
+            </div>
+
+          </div>
+
+          <div class="roadmap-row reveal">
+
+            <div class="roadmap-phase">
+              Phase / 04
+            </div>
+
+            <div>
+              <div class="roadmap-title">
+                Autonomous workflows
+              </div>
+
+              <div class="roadmap-description">
+                Move from passive review toward actionable engineering automation.
+              </div>
+            </div>
+
+            <div class="roadmap-status">
+              Future
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         FINAL CTA
+    ====================================================== -->
+
+    <section class="final-cta">
+
+      <div class="container">
+
+        <div class="eyebrow reveal">
+          <span class="eyebrow-line"></span>
+          ZsK-bot
+          <span class="eyebrow-line"></span>
+        </div>
+
+        <h2 class="final-title reveal">
+          Better context.<br>
+          Better engineering.
+        </h2>
+
+        <p class="final-copy reveal">
+          Explore the project, inspect the architecture and follow
+          the systems we're building around AI-assisted software engineering.
+        </p>
+
+        <div class="final-actions reveal">
+
+          <a
+            href="https://github.com/ZsK-bot"
+            target="_blank"
+            rel="noopener"
+            class="button button-primary"
+          >
+            Open GitHub
+            <span class="button-arrow">↗</span>
+          </a>
+
+          <a href="#top" class="button">
+            Back to top
+            <span class="button-arrow">↑</span>
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =======================================================
+       FOOTER
+  ======================================================== -->
+
+  <footer>
+
+    <div class="container">
+
+      <div class="footer-inner">
+
+        <div class="footer-brand">
+
+          <a href="#top" class="brand">
+            <div class="brand-symbol" aria-hidden="true"></div>
+
+            <div class="brand-name">
+              ZsK-bot
+            </div>
+          </a>
+
+          <p>
+            ENGINEERING INTELLIGENCE / 2026
+          </p>
+
+        </div>
+
+        <div class="footer-links">
+
+          <a href="#company">Company</a>
+          <a href="#technology">Technology</a>
+          <a href="#architecture">Architecture</a>
+          <a href="#roadmap">Roadmap</a>
+
+          <a
+            href="https://github.com/ZsK-bot"
+            target="_blank"
+            rel="noopener"
+          >
+            GitHub ↗
+          </a>
+
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+
+        <div class="footer-bottom-inner">
+
+          <span>
+            ZSK-BOT / SOFTWARE INTELLIGENCE
+          </span>
+
+          <span>
+            BUILT FOR ENGINEERS
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+  <!-- =======================================================
+       JAVASCRIPT
+  ======================================================== -->
+
+  <script>
+    (() => {
+      "use strict";
+
+      /* =====================================================
+         MOBILE NAVIGATION
+      ====================================================== */
+
+      const menuButton = document.getElementById("mobileMenuButton");
+      const mobileNav = document.getElementById("mobileNav");
+
+      if (menuButton && mobileNav) {
+
+        menuButton.addEventListener("click", () => {
+
+          const isOpen = mobileNav.classList.toggle("active");
+
+          menuButton.setAttribute(
+            "aria-expanded",
+            String(isOpen)
+          );
+
+          document.body.classList.toggle(
+            "menu-open",
+            isOpen
+          );
+
+        });
+
+        mobileNav.querySelectorAll("a").forEach((link) => {
+
+          link.addEventListener("click", () => {
+
+            mobileNav.classList.remove("active");
+
+            menuButton.setAttribute(
+              "aria-expanded",
+              "false"
+            );
+
+            document.body.classList.remove(
+              "menu-open"
+            );
+
+          });
+
+        });
+
+      }
+
+      /* =====================================================
+         SCROLL REVEAL
+      ====================================================== */
+
+      const revealItems =
+        document.querySelectorAll(".reveal");
+
+      const reducedMotion =
+        window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+      if (reducedMotion) {
+
+        revealItems.forEach((item) => {
+          item.classList.add("visible");
+        });
+
+      } else if ("IntersectionObserver" in window) {
+
+        const observer =
+          new IntersectionObserver(
+            (entries, observerInstance) => {
+
+              entries.forEach((entry) => {
+
+                if (!entry.isIntersecting) {
+                  return;
+                }
+
+                entry.target.classList.add("visible");
+
+                observerInstance.unobserve(
+                  entry.target
+                );
+
+              });
+
+            },
+            {
+              threshold: 0.08,
+              rootMargin: "0px 0px -35px 0px"
+            }
+          );
+
+        revealItems.forEach((item) => {
+          observer.observe(item);
+        });
+
+      } else {
+
+        revealItems.forEach((item) => {
+          item.classList.add("visible");
+        });
+
+      }
+
+      /* =====================================================
+         ACTIVE NAVIGATION
+      ====================================================== */
+
+      const sections =
+        document.querySelectorAll(
+          "main section[id]"
+        );
+
+      const navLinks =
+        document.querySelectorAll(
+          ".desktop-nav a"
+        );
+
+      if (
+        "IntersectionObserver" in window &&
+        sections.length &&
+        navLinks.length
+      ) {
+
+        const sectionObserver =
+          new IntersectionObserver(
+            (entries) => {
+
+              entries.forEach((entry) => {
+
+                if (!entry.isIntersecting) {
+                  return;
+                }
+
+                navLinks.forEach((link) => {
+
+                  const target =
+                    link.getAttribute("href");
+
+                  link.style.color =
+                    target === "#" + entry.target.id
+                      ? "var(--text)"
+                      : "";
+
+                });
+
+              });
+
+            },
+            {
+              threshold: 0,
+              rootMargin: "-30% 0px -60% 0px"
+            }
+          );
+
+        sections.forEach((section) => {
+          sectionObserver.observe(section);
+        });
+
+      }
+
+      /* =====================================================
+         SMOOTH ANCHOR FALLBACK
+      ====================================================== */
+
+      document
+        .querySelectorAll('a[href^="#"]')
+        .forEach((link) => {
+
+          link.addEventListener("click", (event) => {
+
+            const id =
+              link.getAttribute("href");
+
+            if (!id || id === "#") {
+              return;
+            }
+
+            const target =
+              document.querySelector(id);
+
+            if (!target) {
+              return;
+            }
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+              behavior:
+                reducedMotion
+                  ? "auto"
+                  : "smooth",
+              block: "start"
+            });
+
+          });
+
+        });
+
+      /* =====================================================
+         ESCAPE CLOSE MOBILE MENU
+      ====================================================== */
+
+      document.addEventListener("keydown", (event) => {
+
+        if (
+          event.key === "Escape" &&
+          mobileNav &&
+          mobileNav.classList.contains("active")
+        ) {
+
+          mobileNav.classList.remove("active");
+
+          if (menuButton) {
+            menuButton.setAttribute(
+              "aria-expanded",
+              "false"
+            );
+          }
+
+          document.body.classList.remove(
+            "menu-open"
+          );
+
+          menuButton?.focus();
+
+        }
+
+      });
+
+      /* =====================================================
+         HEADER SCROLL STATE
+      ====================================================== */
+
+      const header =
+        document.querySelector(".site-header");
+
+      let lastScroll = 0;
+
+      window.addEventListener(
+        "scroll",
+        () => {
+
+          const currentScroll =
+            window.scrollY;
+
+          if (!header) {
+            return;
+          }
+
+          if (currentScroll > 10) {
+
+            header.style.borderBottomColor =
+              "rgba(42, 49, 64, 0.95)";
+
+          } else {
+
+            header.style.borderBottomColor =
+              "rgba(30, 35, 48, 0.82)";
+
+          }
+
+          lastScroll = currentScroll;
+
+        },
+        {
+          passive: true
+        }
+      );
+
+    })();
+  </script>
+
+</body>
+</html>
